@@ -1,4 +1,9 @@
-RSpec.describe "RunData" do
+# frozen_string_literal: true
+
+require './app/run_data'
+
+# rubocop:disable Metrics/BlockLength
+RSpec.describe RunData do
   subject(:run_data) { RunData.from_json('fake-local-run-id', run_json) }
 
   let(:run_json) do
@@ -14,23 +19,23 @@ RSpec.describe "RunData" do
             file_path: './spec/some_spec.rb',
             line_number: 13,
             run_time: 0.011690498,
-            pending_message: nil,
-          },
+            pending_message: nil
+          }
         ],
         summary: {
           duration: 0.020395725,
           example_count: 1,
           failure_count: 0,
           pending_count: 0,
-          errors_outside_of_examples_count: 0,
+          errors_outside_of_examples_count: 0
         },
-        summary_line: '3 examples, 0 failures',
+        summary_line: '3 examples, 0 failures'
       }
     )
   end
 
   context 'with some JSON data' do
-    it "has the correct version" do
+    it 'has the correct version' do
       expect(run_data.version).to eq('3.12.0')
     end
 
@@ -39,14 +44,14 @@ RSpec.describe "RunData" do
     end
 
     it 'has the correct summary' do
-      # ToDo: switch key strings over to keywords
+      # TODO: switch key strings over to keywords
       expect(run_data.summary).to eq(
         {
           'duration' => 0.020395725,
           'example_count' => 1,
           'failure_count' => 0,
           'pending_count' => 0,
-          'errors_outside_of_examples_count' => 0,
+          'errors_outside_of_examples_count' => 0
         }
       )
     end
@@ -106,23 +111,24 @@ RSpec.describe "RunData" do
               file_path: './spec/some_spec.rb',
               line_number: 13,
               run_time: 0.011690498,
-              pending_message: nil,
-            },
+              pending_message: nil
+            }
           ],
           summary: {
             duration: 0.020395725,
             example_count: 1,
             failure_count: 0,
             pending_count: 0,
-            errors_outside_of_examples_count: 0,
+            errors_outside_of_examples_count: 0
           },
-          summary_line: '3 examples, 0 failures',
+          summary_line: '3 examples, 0 failures'
         }
       )
     end
 
-    it "has the correct version" do
+    it 'has the correct version' do
       expect(run_data.version).to eq('4.13.1')
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
