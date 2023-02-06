@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'fakefs/spec_helpers'
 
 require './app/test_data'
@@ -21,18 +22,18 @@ RSpec.describe TestData do
               file_path: './spec/some_spec.rb',
               line_number: 13,
               run_time: 0.011690498,
-              pending_message: nil,
-            },
+              pending_message: nil
+            }
           ],
           summary: {
             duration: 0.020395725,
             example_count: 1,
             failure_count: 0,
             pending_count: 0,
-            errors_outside_of_examples_count: 0,
+            errors_outside_of_examples_count: 0
           },
-          summary_line: '3 examples, 0 failures',
-        },
+          summary_line: '3 examples, 0 failures'
+        }
       )
     end
 

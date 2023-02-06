@@ -25,9 +25,9 @@ RSpec.describe TestData do
 
     context 'with a couple of test runs' do
       let(:test_ids) do
-        [
-          '0eb55661-0355-48db-97ac-f3aefc4ec22b',
-          '0247035a-ff95-4986-be04-ce0fe775adad',
+        %w[
+          0eb55661-0355-48db-97ac-f3aefc4ec22b
+          0247035a-ff95-4986-be04-ce0fe775adad
         ]
       end
 
