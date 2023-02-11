@@ -54,6 +54,7 @@ class RunData
     "#{@test_data_directory}/#{@local_test_run_id}"
   end
 
+  # TODO: Move to TestDataFileSystemInterface
   def create_run_directory
     FileUtils.mkdir_p(test_run_directory)
   end

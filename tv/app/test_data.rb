@@ -4,16 +4,43 @@ require 'json'
 
 require_relative 'run_data'
 
-# Top-level class for accessing the test data
-class TestData
-  def initialize
-    @test_data_directory = 'test-data'
+class TestDataFileSystemInterface
+  attr_reader :test_data_directory
+
+  def initialize(test_data_directory)
+    @test_data_directory = test_data_directory
   end
 
   def local_run_ids
-    Dir.glob("#{@test_data_directory}/*").map do |test_dir|
+    Dir.glob("#{test_data_directory}/*").map do |test_dir|
       test_dir.split('/')[-1]
     end
+  end
+
+  def test_run_directory(local_test_run_id)
+    "#{test_data_directory}/#{local_test_run_id}"
+  end
+
+  def test_run_run_data_filenam(local_test_run_id)
+    "#{test_run_directory(local_test_run_id)}/rspec.out.json"
+  end
+
+  def run_data(local_run_id)
+    RunData.from_json(
+      local_run_id,
+      File.read(test_run_run_data_filenam(local_run_id))
+    )
+  end
+end
+
+# Top-level class for accessing the test data
+class TestData
+  def initialize
+    @file_system = TestDataFileSystemInterface.new('test-data')
+  end
+
+  def local_run_ids
+    @file_system.local_run_ids
   end
 
   def import(rspec_json, git_hash)
@@ -24,16 +51,12 @@ class TestData
     test_run.local_test_run_id
   end
 
-  def test_run_directory(local_test_run_id)
-    "#{@test_data_directory}/#{local_test_run_id}"
-  end
-
   def rspec_file(local_test_run_id)
-    "#{test_run_directory(local_test_run_id)}/rspec.out.json"
+    "#{@file_system.test_run_directory(local_test_run_id)}/rspec.out.json"
   end
 
   def metadata_file(local_test_run_id)
-    "#{test_run_directory(local_test_run_id)}/metada.json"
+    "#{@file_system.test_run_directory(local_test_run_id)}/metada.json"
   end
 
   def save_rspec_output(local_test_run_id, rspec_json)
@@ -60,10 +83,7 @@ class TestData
   end
 
   def run_data(local_run_id)
-    RunData.from_json(
-      local_run_id,
-      File.read("#{@test_data_directory}/#{local_run_id}/rspec.out.json"),
-    )
+    @file_system.run_data(local_run_id)
   end
 
   def test_runs_by_id(test_id)
