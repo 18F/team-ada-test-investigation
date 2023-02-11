@@ -2,10 +2,10 @@
 
 require 'fakefs/spec_helpers'
 
-require './app/test_data'
+require './app/test_data_importer'
 
 # rubocop:disable Metrics/BlockLength
-RSpec.describe TestData do
+RSpec.describe TestDataImporter do
   describe '#import' do
     include FakeFS::SpecHelpers
 
@@ -40,7 +40,9 @@ RSpec.describe TestData do
     let(:git_hash) { '678891c3c2f38304efd1ff47deb0d1ba9f4aac88' }
 
     let(:test_id) do
-      TestData.new.import(test_json, { git_hash: git_hash })
+      file_system = TestDataFileSystemInterface.new('test-data')
+      importer = TestDataImporter.new(file_system)
+      importer.import(test_json, git_hash)
     end
 
     let(:rspec_data_filename) { "test-data/#{test_id}/rspec.out.json" }

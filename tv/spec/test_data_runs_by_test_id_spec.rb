@@ -41,7 +41,7 @@ RSpec.describe TestData do
     end
 
     before do
-      @local_run_id = TestData.new.import(test_json, fake_git_hash)
+      @local_run_id = TestData.new.import(test_json, { git_hash: fake_git_hash })
     end
 
     it 'returns [] for a bogus test id' do

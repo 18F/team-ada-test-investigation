@@ -62,4 +62,8 @@ class RunData
   def test_runs_for_id(test_id)
     examples.filter { |example_run| example_run.id == test_id }
   end
+
+  def test_ids
+    examples.map(&:id)
+  end
 end

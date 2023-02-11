@@ -3,87 +3,32 @@
 require 'json'
 
 require_relative 'run_data'
-
-class TestDataFileSystemInterface
-  attr_reader :test_data_directory
-
-  def initialize(test_data_directory)
-    @test_data_directory = test_data_directory
-  end
-
-  def local_run_ids
-    Dir.glob("#{test_data_directory}/*").map do |test_dir|
-      test_dir.split('/')[-1]
-    end
-  end
-
-  def test_run_directory(local_test_run_id)
-    "#{test_data_directory}/#{local_test_run_id}"
-  end
-
-  def test_run_run_data_filenam(local_test_run_id)
-    "#{test_run_directory(local_test_run_id)}/rspec.out.json"
-  end
-
-  def run_data(local_run_id)
-    RunData.from_json(
-      local_run_id,
-      File.read(test_run_run_data_filenam(local_run_id))
-    )
-  end
-end
+require_relative 'test_data_file_system_interface'
 
 # Top-level class for accessing the test data
 class TestData
-  def initialize
-    @file_system = TestDataFileSystemInterface.new('test-data')
+  def initialize(file_system = TestDataFileSystemInterface.new('test-data'))
+    @file_system = file_system
   end
 
   def local_run_ids
     @file_system.local_run_ids
   end
 
-  def import(rspec_json, git_hash)
-    test_run = RunData.new
-    test_run.create_run_directory
-    save_rspec_output(test_run.local_test_run_id, rspec_json)
-    save_metadata(test_run.local_test_run_id, JSON.generate(git_hash: git_hash))
-    test_run.local_test_run_id
+  def test_ids
+    local_run_ids.inject([]) do |return_value, run_id|
+      return_value + run_data(run_id).test_ids
+    end.uniq
   end
 
-  def rspec_file(local_test_run_id)
-    "#{@file_system.test_run_directory(local_test_run_id)}/rspec.out.json"
-  end
-
-  def metadata_file(local_test_run_id)
-    "#{@file_system.test_run_directory(local_test_run_id)}/metada.json"
-  end
-
-  def save_rspec_output(local_test_run_id, rspec_json)
-    File.open(
-      rspec_file(local_test_run_id),
-      'w',
-    ) do |file|
-      file.write(rspec_json)
-    end
-  end
-
-  def save_metadata(local_test_run_id, metadata)
-    File.open(
-      metadata_file(local_test_run_id),
-      'w',
-    ) do |file|
-      file.write(metadata)
-    end
-  end
-
-  def import_gitlab_run(directory)
-    git_hash = directory.split('/')[-1]
-    import(File.open("#{directory}/rspec.json").read, git_hash)
+  def import(rspec_json, metadata)
+    TestDataImporter.new(@file_system).import(rspec_json, metadata)
   end
 
   def run_data(local_run_id)
-    @file_system.run_data(local_run_id)
+    @file_system.with_rspec_file(local_run_id) do |json_file|
+      RunData.from_json(local_run_id, json_file.read)
+    end
   end
 
   def test_runs_by_id(test_id)

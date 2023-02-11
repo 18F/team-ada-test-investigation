@@ -40,7 +40,7 @@ RSpec.describe TestData do
     let(:git_hash) { '678891c3c2f38304efd1ff47deb0d1ba9f4aac88' }
 
     let(:test_id) do
-      TestData.new.import(test_json, git_hash)
+      TestData.new.import(test_json, { git_hash: git_hash })
     end
 
     it 'retrieves the test run data' do
