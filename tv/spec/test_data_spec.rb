@@ -106,14 +106,8 @@ RSpec.describe TestData do
     end
 
     before do
-      TestData.new.import(
-        test_json,
-        { git_hash: fake_git_hash }
-      )
-      TestData.new.import(
-        different_test_json,
-        { git_hash: different_fake_git_hash }
-      )
+      TestData.new.import(test_json,           { git_hash: fake_git_hash })
+      TestData.new.import(different_test_json, { git_hash: different_fake_git_hash })
     end
 
     it 'returns the test ids without duplicates' do
