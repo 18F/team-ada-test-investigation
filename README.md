@@ -6,10 +6,10 @@ A place for code and stuff relating to team Ada's Friday investigation of our te
    Please include a copy/paste of the actual failure.
    CI/branch links too.
 
+
 # Things to do some Friday
 ## CI pipeline test data scraper (jmax)
 ## Test data repository/munging (jmax)
-## Our tests don't use `email_spec/rspec` (should be in `rails_helper.rb`); why?
 ## Examine analytics specs; lots of things that add no value and things missing
    (John Skinner)
 
@@ -32,6 +32,11 @@ A place for code and stuff relating to team Ada's Friday investigation of our te
 - `flow_session` is a hash with indifferent access in the production
   environment. Is is worth making sure all of the tests which mock it
   are also using indifferent access?
+
+# Experiment
+## Our tests don't use `email_spec/rspec` (should be in `rails_helper.rb`); why?
+We've added it to `rails_helper.rb`; specs pass.
+
 
 # Probably fixed
 - Some unexpected test failures (From Slack conversation with Sonia):
